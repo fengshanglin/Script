@@ -131,31 +131,45 @@ class TestStyleClass:
             stratTag = itemMark['stratTag']
             endTag = itemMark['endTag']
             # head
-            # newLineContent = eline[0:stratTag]+newLineContent
+            startTagBefore = 0
+            if float(stratTag) > 1:
+               newLineContent = newLineContent +  content[0:stratTag]
+            else:
             # middle
-            stratTag = stratTag+itemMark['flagLength']
-            newLineContent = newLineContent + content[stratTag:endTag]
+                stratTag = stratTag+itemMark['flagLength']
+                newLineContent = newLineContent + content[stratTag:endTag]
+            # newLineContent = eline[0:stratTag]+newLineContent
+            # print("markLists.index(itemMark)",markLists.index(itemMark),itemMark)
             # tail
+            # The list end of tags
+            tailLocation = markLists.index(itemMark)+1
+            endTag = itemMark['endTag'] + itemMark['flagLength']
+            if len(markLists) == tailLocation:
+                newLineContent = newLineContent + content[(endTag+1):-1]
+            else:
+                endTagBefore = markLists[tailLocation]['stratTag']
+                newLineContent = newLineContent + content[endTag:endTagBefore]
+
             endTag = itemMark['endTag'] + itemMark['flagLength']+1
             newLineContent = newLineContent + content[endTag:-1]
             itemMark['endTag'] = itemMark['endTag'] - itemMark['flagLength']
             # text.tag_names()
-            text.insert("end",newLineContent+"\n")
-            for itemMark in markLists:
-                valueMark = self.get_item_mark(itemMark["nameTag"])
-                strartMarkStr = valueMark[0]
-                endMarkStr = valueMark[1]
-                startMark = f"{iNumer}.{itemMark['stratTag']}"
-                endMark = f"{iNumer}.{itemMark['endTag']}"
-                strartMarkStr= strartMarkStr + f"{iNumer}"
-                endMarkStr = endMarkStr + f"{iNumer}"
-                text.mark_set(strartMarkStr,startMark)
-                text.mark_set(endMarkStr,endMark)
-                text.tag_add("tag1",strartMarkStr,endMarkStr)
-            text.tag_config('tag1', foreground='black', font="Arial 16",
-            background='lightyellow')
-            iNumer = iNumer + 1
-            return iNumer
+        text.insert("end",newLineContent+"\n")
+        for itemMark in markLists:
+            valueMark = self.get_item_mark(itemMark["nameTag"])
+            strartMarkStr = valueMark[0]
+            endMarkStr = valueMark[1]
+            startMark = f"{iNumer}.{itemMark['stratTag']}"
+            endMark = f"{iNumer}.{itemMark['endTag']}"
+            strartMarkStr= strartMarkStr + f"{iNumer}"
+            endMarkStr = endMarkStr + f"{iNumer}"
+            text.mark_set(strartMarkStr,startMark)
+            text.mark_set(endMarkStr,endMark)
+            text.tag_add("tag1",strartMarkStr,endMarkStr)
+        text.tag_config('tag1', foreground='black', font="Arial 16",
+        background='lightyellow')
+        iNumer = iNumer + 1
+        return iNumer
 
 if __name__ == "__main__":
     test = TestStyleClass()
